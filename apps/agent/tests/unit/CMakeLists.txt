@@ -1,0 +1,3 @@
+add_unity_test(agent_test_packet_dispatcher test_packet_dispatcher.c)
+
+target_link_libraries(agent_test_packet_dispatcher PRIVATE agent_core)

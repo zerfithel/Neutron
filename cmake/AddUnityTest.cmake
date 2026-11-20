@@ -1,0 +1,5 @@
+function(add_unity_test target)
+  add_executable(${target} ${ARGN})
+  target_link_libraries(${target} PRIVATE unity)
+  add_test(NAME ${target} COMMAND ${target})
+endfunction()

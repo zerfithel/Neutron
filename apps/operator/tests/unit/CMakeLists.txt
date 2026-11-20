@@ -1,0 +1,5 @@
+add_unity_test(operator_test_input test_input.c)
+add_unity_test(operator_test_menu test_menu.c)
+
+target_link_libraries(operator_test_input PRIVATE operator_core)
+target_link_libraries(operator_test_menu PRIVATE operator_core)
