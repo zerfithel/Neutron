@@ -15,12 +15,9 @@ static constexpr char PAYLOAD[] = "firefox";
 
 static bool callback_called = false;
 
-void setUp(void) {
-  callback_called = false;
-}
+void setUp(void) { callback_called = false; }
 
-void tearDown(void) {
-}
+void tearDown(void) {}
 
 static bool fake_execute_command(const char *command) {
   callback_called = true;
@@ -62,4 +59,3 @@ int main(void) {
 
   return UNITY_END();
 }
-

