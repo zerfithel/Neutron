@@ -33,11 +33,11 @@ void tearDown(void) {
 }
 
 static void set_input(const char *text) {
-  rewind(input_stream);
   clearerr(input_stream);
 
+  TEST_ASSERT_EQUAL_INT(0, fseek(input_stream, 0, SEEK_SET));
   TEST_ASSERT_TRUE(fputs(text, input_stream) >= 0);
-  rewind(input_stream);
+  TEST_ASSERT_EQUAL_INT(0, fseek(input_stream, 0, SEEK_SET));
 }
 
 static void test_show_menu_returns_handler_for_valid_option(void) {
