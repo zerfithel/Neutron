@@ -13,18 +13,24 @@ bool execute_command(const char *command) {
   }
 
 #ifdef _WIN32
+  char cmdline[4096] = {};
+
+  size_t len = strlen(command);
+  if (len >= sizeof cmdline) {
+    return false;
+  }
+  memcpy(cmdline, command, len + 1);
+
   STARTUPINFOA si = {};
   PROCESS_INFORMATION pi = {};
   si.cb = sizeof si;
 
-  char *cmdline = _strdup(command);
-
   BOOL ok = CreateProcessA(NULL, cmdline, NULL, NULL, FALSE, CREATE_NO_WINDOW,
                            NULL, NULL, &si, &pi);
-
   if (!ok) {
     return false;
   }
+
   CloseHandle(pi.hThread);
   CloseHandle(pi.hProcess);
 #else
