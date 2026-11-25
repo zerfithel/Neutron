@@ -23,6 +23,9 @@ platforms, and sanitizer options.
 ```bash
 git clone https://github.com/zerfithel/Neutron.git
 cd Neutron
+
+# Download git submodules
+git submodule update --init --recursive
 ```
 
 ## Configure and build
