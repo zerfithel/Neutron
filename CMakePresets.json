@@ -4,7 +4,7 @@
     {
       "name": "release",
       "displayName": "Release build",
-      "description": "Enables optimisations, strips binaries and debug info.",
+      "description": "Release build",
       "generator": "Ninja",
       "binaryDir": "build",
       "cacheVariables": {
@@ -14,7 +14,7 @@
     {
       "name": "debug",
       "displayName": "Debug build",
-      "description": "Disables optimisations, leaves debug info. Add sanitizers via ENABLE_ASAN, ENABLE_UBSAN etc.",
+      "description": "Debug build",
       "generator": "Ninja",
       "binaryDir": "build",
       "cacheVariables": {
