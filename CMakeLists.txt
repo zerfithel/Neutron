@@ -40,7 +40,7 @@ add_subdirectory(apps/agent)
 add_subdirectory(apps/operator)
 
 if(BUILD_TESTING)
-  add_subdirectory(apps/agent/tests/unit)
-  add_subdirectory(apps/operator/tests/unit)
+  add_subdirectory(apps/agent/test/unit)
+  add_subdirectory(apps/operator/test/unit)
 endif()
 
